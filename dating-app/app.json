@@ -23,7 +23,7 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "scheme": "your-app-scheme",
+    "scheme": "dating-app",
     "web": {
       "favicon": "./assets/favicon.png"
     },
