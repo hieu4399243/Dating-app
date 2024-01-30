@@ -1,66 +1,67 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female", "other"],
+  },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: String,
+  crushes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
+  ],
+  recievedLikes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    password: {
-        type: String,
-        required: true,
+  ],
+  matches: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    gender: {
-        type: String,
-        enum: ["male", "female", "other"],
+  ],
+  profileImages: [
+    {
+      type: String,
     },
-    verified: {
-        type: Boolean,
-        default: false,
+  ],
+  description: {
+    type: String,
+  },
+  turnOns: [
+    {
+      type: String, //Array of string for turn ons
     },
-    verificationToken: String,
-    crushes: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-        },
-    ],
-    receivedLikes: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-        },
-    ],
-    matches: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-        },
-    ],
-    profileImages :[
-        {
-            type: String,
-        },
-    ],
-    description:{
-        type:String,
+  ],
+  lookingFor: [
+    {
+      type: String, // Array of strings for what they are looking for
     },
-    turnOns: [
-        {
-            type: String,
-        }
-    ],
-    lookingFor:[
-        {
-            type: Stringg,
-        }
-    ],
+  ],
 });
 
-const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+const User = mongoose.model("User",userSchema);
+
+module.exports = User

@@ -1,13 +1,22 @@
-import { StyleSheet, Text, View, Image, KeyboardAvoidingView,TextInput, Pressable} from 'react-native'
-import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  KeyboardAvoidingView,
+  TextInput,
+  Pressable,
+} from "react-native";
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import {useRouter} from 'expo-router'
-
+import { usePathname, useRouter } from "expo-router";
 
 const login = () => {
-    const router = useRouter();
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
@@ -87,13 +96,15 @@ const login = () => {
               color="white"
             />
             <TextInput
+              value={email}
+              onChangeText={setEmail}
               placeholder="Enter your email"
               placeholderTextColor={"white"}
               style={{
                 color: "white",
                 marginVertical: 10,
                 width: 300,
-                fontSize: 17
+                fontSize: 17,
               }}
             />
           </View>
@@ -117,7 +128,8 @@ const login = () => {
                 color="white"
               />
               <TextInput
-                
+                value={password}
+                onChangeText={setPassword}
                 secureTextEntry={true}
                 placeholder="Enter your password"
                 style={{
@@ -181,9 +193,9 @@ const login = () => {
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default login
+export default login;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
