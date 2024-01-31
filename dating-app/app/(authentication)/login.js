@@ -12,11 +12,28 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { usePathname, useRouter } from "expo-router";
+import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = () =>{
+    const user = {
+      email: email,
+      password: password,
+
+    };
+
+    axios.post("http://localhost:3000/login",user).then((response) => {
+        console.log(response);
+        const token = response.data.token;
+        AsyncStorage.setItem("auth",token);
+        router.replace("/(authentication)/select")
+    });
+  }
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
@@ -161,6 +178,7 @@ const login = () => {
           <View style={{ marginTop: 50 }} />
 
           <Pressable
+            onPress={handleLogin}
             style={{
               width: 200,
               backgroundColor: "#FFC0CB",
