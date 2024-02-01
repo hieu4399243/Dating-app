@@ -26,10 +26,11 @@ const login = () => {
       password: password,
 
     };
-
+    //router.replace("/(authentication)/select")
     axios.post("http://localhost:3000/login",user).then((response) => {
         console.log(response);
         const token = response.data.token;
+        console.log(token);
         AsyncStorage.setItem("auth",token);
         router.replace("/(authentication)/select")
     });
