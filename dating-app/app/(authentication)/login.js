@@ -7,34 +7,46 @@ import {
   TextInput,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { usePathname, useRouter } from "expo-router";
-import axios from 'axios';
+import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("auth");
+        if (token) {
+          router.replace("/(tabs)/profile");
+        }
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    checkLoginStatus();
+  }, []);
 
-  const handleLogin = () =>{
+  const handleLogin = () => {
     const user = {
       email: email,
       password: password,
-
     };
     //router.replace("/(authentication)/select")
-    axios.post("http://localhost:3000/login",user).then((response) => {
-        console.log(response);
-        const token = response.data.token;
-        console.log(token);
-        AsyncStorage.setItem("auth",token);
-        router.replace("/(authentication)/select")
+    axios.post("http://localhost:3000/login", user).then((response) => {
+      console.log(response);
+      const token = response.data.token;
+      console.log(token);
+      AsyncStorage.setItem("auth", token);
+      router.replace("/(authentication)/select");
     });
-  }
+  };
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
