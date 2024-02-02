@@ -13,11 +13,17 @@ import {
 import React, { useState, useEffect } from "react";
 import { Entypo, AntDesign } from "@expo/vector-icons";
 import Carousel from "react-native-snap-carousel";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import "core-js/stable/atob";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const index = () => {
   const [option, setOption] = useState("AD");
   const [description, setDescription] = useState("");
   const [activeSlide, setActiveSlide] = React.useState(0);
+  const [userId, setUserId] = useState("");
+  console.log(userId);
   const profileImages = [
     {
       image:
@@ -84,6 +90,33 @@ const index = () => {
       description: "Let's Vibe and see where it goes",
     },
   ];
+
+  useEffect(() => {
+    const fectchUser = async () => {
+      const token = await AsyncStorage.getItem("auth");
+      const decodeToken = jwtDecode(token);
+      const userId = decodeToken.userId;
+      setUserId(userId);
+    };
+    fectchUser();
+  }, []);
+
+  const handleUpdateDescription = async () =>{
+      try {
+        const response = await axios.put(
+          `http://localhost:3000/users/${userId}/description`,
+          {
+            description: description,
+          }
+        );
+        console.log(response.data);
+        if (response.status === 200) {
+          Alert.alert("Success", "Description updated successfully");
+        }
+      } catch (error) {
+        console.log("Error", error);
+      }
+  } 
 
   const renderImage = ({ item }) => {
     return (
@@ -234,6 +267,7 @@ const index = () => {
               placeholder="Write your AD for people to like you"
             />
             <Pressable
+              onPress={handleUpdateDescription}
               style={{
                 marginTop: "auto",
                 flexDirection: "row",
@@ -336,7 +370,9 @@ const index = () => {
                     color: "gray",
                     textAlign: "center",
                   }}
-                >{item?.description}</Text>
+                >
+                  {item?.description}
+                </Text>
               </Pressable>
             ))}
           </View>
@@ -359,14 +395,14 @@ const index = () => {
                       width: 150,
                       margin: 10,
                       borderRadius: 5,
-                      borderColor: "#fd5c63"
+                      borderColor: "#fd5c63",
                     }}
                   >
                     <Text
                       style={{
                         textAlign: "center",
                         fontWeight: "500",
-                        fontSize: 13
+                        fontSize: 13,
                       }}
                     >
                       {item?.name}
