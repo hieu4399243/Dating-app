@@ -25,6 +25,8 @@ const index = () => {
   const [userId, setUserId] = useState("");
   const [selectTurnOn, setSelectTurnOn] = useState([]);
   const [lookingOptions, setLookingOtions] = useState([]);
+  const [imageUrl, setImageUrl] = useState("");
+  const [images, setImages] = useState([]);
   const profileImages = [
     {
       image:
@@ -107,6 +109,7 @@ const index = () => {
       const user = response.data;
       setDescription(user?.user?.description);
       setSelectTurnOn(user?.user?.turnOns);
+      setImages(user?.user.profileImages);
     } catch (error) {
       console.log("Error", error);
     }
@@ -151,12 +154,12 @@ const index = () => {
             borderRadius: 10,
             transform: [{ rotate: "-5deg" }],
           }}
-          source={{ uri: item?.image }}
+          source={{ uri: item }}
         />
         <Text
           style={{ position: "absolute", top: 10, right: 10, color: "black" }}
         >
-          {activeSlide + 1}/{profileImages.length}
+          {activeSlide + 1}/{images.length}
         </Text>
       </View>
     );
@@ -249,6 +252,20 @@ const index = () => {
       }
     } catch (error) {
       console.log("error removing turn on", error);
+    }
+  }
+
+  const handleAddImage = async() =>{
+    try{
+      const response = await axios.post(`http://localhost:3000/users/${userId}/profile-images`,{
+          imageUrl:imageUrl
+      });
+
+      console.log(response);
+
+      setImageUrl("");
+    } catch(error){
+        console.log("error",error)
     }
   }
 
@@ -404,7 +421,7 @@ const index = () => {
         {option == "Photos" && (
           <View>
             <Carousel
-              data={profileImages}
+              data={images}
               renderItem={renderImage}
               sliderWidth={350}
               itemWidth={300}
@@ -430,11 +447,13 @@ const index = () => {
                   color="gray"
                 />
                 <TextInput
+                  value={imageUrl}
+                  onChangeText={(text) => setImageUrl(text)}
                   style={{ color: "gray", marginVertical: 10, width: 300 }}
                   placeholder="enter your image url"
                 />
               </View>
-              <Button style={{ marginTop: 5 }} title="Add Image" />
+              <Button  onPress={handleAddImage} style={{ marginTop: 5 }} title="Add Image" />
             </View>
           </View>
         )}
