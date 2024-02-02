@@ -24,6 +24,7 @@ const index = () => {
   const [activeSlide, setActiveSlide] = React.useState(0);
   const [userId, setUserId] = useState("");
   const [selectTurnOn, setSelectTurnOn] = useState([]);
+  const [lookingOptions, setLookingOtions] = useState([]);
   const profileImages = [
     {
       image:
@@ -168,6 +169,50 @@ const index = () => {
       addTurnOn(turnon);
     }
   }
+
+  const handleOption = (lookingFor) =>{
+    console.log(lookingFor);
+    if(lookingOptions.includes(lookingFor)){
+      removeOptions(lookingFor);
+    }else{
+      addOptions(lookingFor);
+    }
+  }
+
+  const addOptions = async(lookingFor)=>{
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/users/${userId}/looking-for`,
+        {
+          lookingFor: lookingFor,
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.status == 200) {
+        setLookingOtions([...lookingOptions, lookingFor]);
+      }
+    } catch (error) {
+      console.log("Error addding looking for", error);
+    }
+  }
+
+  const removeOptions = async (lookingFor) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/users/${userId}/looking-for/remove`,
+        {
+          lookingFor: lookingFor,
+        }
+      );
+      if (response.status === 200) {
+        setLookingOtions(lookingOptions.filter((item) => item !== lookingFor));
+      }
+    } catch (error) {
+      console.error("Error removing looking for:", error);
+    }
+  };
 
   const addTurnOn = async (turnOn) =>{
     try {
@@ -454,7 +499,11 @@ const index = () => {
                 data={data}
                 renderItem={({ item }) => (
                   <Pressable
+                    onPress={() => handleOption(item?.name)}
                     style={{
+                      backgroundColor: lookingOptions.includes(item?.name)
+                        ? "#fd5c63"
+                        : "white",
                       padding: 16,
                       justifyContent: "center",
                       alignItems: "center",
@@ -462,6 +511,9 @@ const index = () => {
                       margin: 10,
                       borderRadius: 5,
                       borderColor: "#fd5c63",
+                      borderWidth: lookingOptions.includes(item?.name)
+                        ? "transparent"
+                        : 0.7,
                     }}
                   >
                     <Text
@@ -469,12 +521,18 @@ const index = () => {
                         textAlign: "center",
                         fontWeight: "500",
                         fontSize: 13,
+                        color: lookingOptions.includes(item?.name)
+                          ? "white"
+                          : "black",
                       }}
                     >
                       {item?.name}
                     </Text>
                     <Text
                       style={{
+                        color: lookingOptions.includes(item?.name)
+                          ? "white"
+                          : "gray",
                         textAlign: "center",
                         width: 140,
                         marginTop: 10,

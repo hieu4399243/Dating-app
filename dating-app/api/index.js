@@ -263,6 +263,79 @@ app.put("/users/:userId/turn-ons/remove", async (req, res) => {
 });
 
 
+//end point to add a lookingFor  for a user in the backend
+app.put("/users/:userId/looking-for", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { lookingFor } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $addToSet: { lookingFor: lookingFor },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "No user" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Looking for updated succesfully".user });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating looking for", error });
+  }
+});
+
+//endpoint to remove looking for in the backend
+app.put("/users/:userId/looking-for/remove", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { lookingFor } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { lookingFor: lookingFor },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "No user" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Looking for updated succesfully".user });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing looking for", error });
+  }
+});
+
+app.post("/users/:userId/profile-images", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { imageUrl } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.profileImages.push(imageUrl);
+
+    await user.save();
+
+    return res.status(200).json({ message: "Image has been added", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error addding the profile images" });
+  }
+});
+
 
 
 
