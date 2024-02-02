@@ -23,7 +23,7 @@ const index = () => {
   const [description, setDescription] = useState("");
   const [activeSlide, setActiveSlide] = React.useState(0);
   const [userId, setUserId] = useState("");
-  console.log(userId);
+  const [selectTurnOn, setSelectTurnOn] = useState([]);
   const profileImages = [
     {
       image:
@@ -90,7 +90,7 @@ const index = () => {
       description: "Let's Vibe and see where it goes",
     },
   ];
-
+  
   useEffect(() => {
     const fectchUser = async () => {
       const token = await AsyncStorage.getItem("auth");
@@ -100,6 +100,21 @@ const index = () => {
     };
     fectchUser();
   }, []);
+  const fetchUserDescription = async() => {
+    try {
+      const response = await axios.get(`http://localhost:3000/users/${userId}`);
+      const user = response.data;
+      setDescription(user?.user?.description);
+      setSelectTurnOn(user?.user?.turnOns);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
+  useEffect(()=>{
+    if(userId){
+      fetchUserDescription();
+    }
+  }, [userId]);
 
   const handleUpdateDescription = async () =>{
       try {
@@ -145,6 +160,52 @@ const index = () => {
       </View>
     );
   };
+
+  const handleTurnOns = (turnon) =>{
+    if(selectTurnOn.includes(turnon)){
+      removeTurnOn(turnon);
+    }else{
+      addTurnOn(turnon);
+    }
+  }
+
+  const addTurnOn = async (turnOn) =>{
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/users/${userId}/turn-ons/add`,
+        {
+          turnOn: turnOn,
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.status == 200) {
+        setSelectTurnOn([...selectTurnOn, turnOn]);
+      }
+    } catch (error) {
+      console.log("Error adding turn on", error);
+    }
+  }
+
+  const removeTurnOn = async (turnOn) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/users/${userId}/turn-ons/remove`,
+        {
+          turnOn: turnOn,
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.status == 200) {
+        setSelectTurnOn(selectTurnOn.filter((item) => item !== turnOn));
+      }
+    } catch (error) {
+      console.log("error removing turn on", error);
+    }
+  }
 
   return (
     <ScrollView>
@@ -338,6 +399,7 @@ const index = () => {
           <View>
             {turnons?.map((item, index) => (
               <Pressable
+                onPress={() => handleTurnOns(item?.name)}
                 style={{
                   backgroundColor: "#FFFDD0",
                   padding: 10,
@@ -361,7 +423,11 @@ const index = () => {
                     }}
                   >
                     {item?.name}
+                    {selectTurnOn.includes(item?.name) && (
+                      <AntDesign name="checkcircle" size={18} color="#17B169" />
+                    )}
                   </Text>
+
                 </View>
                 <Text
                   style={{
