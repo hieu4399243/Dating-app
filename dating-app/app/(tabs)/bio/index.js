@@ -88,8 +88,12 @@ const index = () => {
   const renderImage = ({ item }) => {
     return (
       <View
-      style={{ width: "100%", justifyContent: "center", alignItems: "center" }}
-    >
+        style={{
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Image
           style={{
             width: "85%",
@@ -108,8 +112,6 @@ const index = () => {
       </View>
     );
   };
-  
-  
 
   return (
     <ScrollView>
@@ -260,13 +262,130 @@ const index = () => {
       </View>
       <View style={{ marginHorizontal: 14 }}>
         {option == "Photos" && (
-          <Carousel
-            data={profileImages}
-            renderItem={renderImage}
-            sliderWidth={350}
-            itemWidth={300}
-            onSnapToItem={(index) => setActiveSlide(index)}
-          />
+          <View>
+            <Carousel
+              data={profileImages}
+              renderItem={renderImage}
+              sliderWidth={350}
+              itemWidth={300}
+              onSnapToItem={(index) => setActiveSlide(index)}
+            />
+            <View style={{ marginTop: 25 }}>
+              <Text>Add a picture of yourself</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 5,
+                  paddingVertical: 5,
+                  borderRadius: 5,
+                  marginTop: 10,
+                  backgroundColor: "#DCDCDC",
+                }}
+              >
+                <Entypo
+                  style={{ marginLeft: 8 }}
+                  name="image"
+                  size={24}
+                  color="gray"
+                />
+                <TextInput
+                  style={{ color: "gray", marginVertical: 10, width: 300 }}
+                  placeholder="enter your image url"
+                />
+              </View>
+              <Button style={{ marginTop: 5 }} title="Add Image" />
+            </View>
+          </View>
+        )}
+      </View>
+      <View style={{ marginHorizontal: 14 }}>
+        {option == "Turn-ons" && (
+          <View>
+            {turnons?.map((item, index) => (
+              <Pressable
+                style={{
+                  backgroundColor: "#FFFDD0",
+                  padding: 10,
+                  marginVertical: 10,
+                }}
+                key={index}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      flex: 1,
+                    }}
+                  >
+                    {item?.name}
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    marginTop: 4,
+                    fontSize: 15,
+                    color: "gray",
+                    textAlign: "center",
+                  }}
+                >{item?.description}</Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+      </View>
+      <View style={{ marginHorizontal: 14 }}>
+        {option == "Looking For" && (
+          <>
+            <View>
+              <FlatList
+                columnWrapperStyle={{ justifyContent: "space-between" }}
+                numColumns={2}
+                data={data}
+                renderItem={({ item }) => (
+                  <Pressable
+                    style={{
+                      padding: 16,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: 150,
+                      margin: 10,
+                      borderRadius: 5,
+                      borderColor: "#fd5c63"
+                    }}
+                  >
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        fontWeight: "500",
+                        fontSize: 13
+                      }}
+                    >
+                      {item?.name}
+                    </Text>
+                    <Text
+                      style={{
+                        textAlign: "center",
+                        width: 140,
+                        marginTop: 10,
+                        fontSize: 13,
+                      }}
+                    >
+                      {item?.description}
+                    </Text>
+                  </Pressable>
+                )}
+              />
+            </View>
+          </>
         )}
       </View>
     </ScrollView>
