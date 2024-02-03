@@ -302,7 +302,7 @@ uri: randomImage,
               }}
             >
               <Image
-              source={{uri:randomImage}}
+                source={{uri:randomImage}}
                 style={{
                   width: 60,
                   height: 60,
