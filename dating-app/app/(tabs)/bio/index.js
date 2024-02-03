@@ -110,6 +110,7 @@ const index = () => {
       setDescription(user?.user?.description);
       setSelectTurnOn(user?.user?.turnOns);
       setImages(user?.user.profileImages);
+      setLookingOtions(user?.user.lookingFor);
     } catch (error) {
       console.log("Error", error);
     }
@@ -268,14 +269,18 @@ const index = () => {
         console.log("error",error)
     }
   }
-
+  const getRandomImage = () => {
+    const randomIndex = Math.floor(Math.random()*images.length);
+    return images[randomIndex];
+  }
+  const randomImage = getRandomImage();
   return (
     <ScrollView>
       <View>
         <Image
           style={{ width: "100%", height: 200, resizeMode: "cover" }}
           source={{
-            uri: "https://static.vecteezy.com/system/resources/thumbnails/018/977/074/original/animated-backgrounds-with-liquid-motion-graphic-background-cool-moving-animation-for-your-background-free-video.jpg",
+uri: randomImage,
           }}
         />
         <View>
@@ -297,6 +302,7 @@ const index = () => {
               }}
             >
               <Image
+              source={{uri:randomImage}}
                 style={{
                   width: 60,
                   height: 60,
