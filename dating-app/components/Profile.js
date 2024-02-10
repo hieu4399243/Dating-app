@@ -11,11 +11,51 @@ import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import axios from "axios";
+import * as Animatable from "react-native-animatable";
 
 const Profile = ({ item, isEven, userId, setProfiles }) => {
   const colors = ["#F0F8FF", "#FFFFFF"];
   const [liked, setLiked] = useState(false);
   const [selected, setSelcted] = useState(false);
+  const handleLike = async (selectedUserId) => {
+    try {
+      setLiked(true);
+      await axios.post("http://localhost:3000/send-like", {
+        currentUserId: userId,
+        selectedUserId: selectedUserId,
+      });
+
+      setTimeout(() => {
+        setProfiles((prevProfiles) =>
+          prevProfiles.filter((profile) => profile._id !== selectedUserId)
+        );
+        setLiked(false);
+      }, 200);
+    } catch (error) {
+      console.log("error liking", error);
+    }
+  };
+  const handleLikeOther = async (selectedUserId) => {
+    try {
+      setSelcted(true);
+      await axios.post("http://localhost:3000/send-like", {
+        currentUserId: userId,
+        selectedUserId: selectedUserId,
+      });
+
+      setTimeout(() => {
+        setProfiles((prevProfiles) =>
+          prevProfiles.filter((profile) => profile._id !== selectedUserId)
+        );
+        setSelcted(false);
+      }, 200);
+
+      // Handle success: Perform any UI updates or navigate to another screen
+    } catch (error) {
+      console.error("Error liking user:", error);
+      // Handle error scenarios
+    }
+  };
   if (isEven) {
     return (
       <View style={{ padding: 12, backgroundColor: "#F0F8FF" }}>

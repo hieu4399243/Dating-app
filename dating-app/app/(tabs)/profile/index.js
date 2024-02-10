@@ -63,13 +63,13 @@ const index = () => {
       <FlatList
         data={profiles}
         keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => ( 
+        renderItem={({ item, index}) => ( 
           <Profile
             key={index}
             item={item}
             userId={userId}
             setProfiles={setProfiles}
-            isEven={index % 2}
+            isEven={index%2}
           />
         )}
       />
