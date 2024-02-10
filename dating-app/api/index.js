@@ -8,7 +8,11 @@ const app = express();
 const port = 3000;
 const cors = require("cors");
 
+
+
 const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+
 
 
 app.use(cors());
@@ -465,19 +469,52 @@ app.get("/users/:userId/matches", async (req, res) => {
   }
 });
 
+io.on("connection", (socket) => {
+  console.log("a user is connected");
+
+  socket.on("sendMessage", async (data) => {
+    try {
+      const { senderId, receiverId, message } = data;
+
+      console.log("data", data);
+
+      const newMessage = new Chat({ senderId, receiverId, message });
+      await newMessage.save();
+
+      //emit the message to the receiver
+      io.to(receiverId).emit("receiveMessage", newMessage);
+    } catch (error) {
+      console.log("Error handling the messages");
+    }
+    socket.on("disconnet", () => {
+      console.log("user disconnected");
+    });
+  });
+});
+
+http.listen(8000, () => {
+  console.log("Socket.IO server running on port 8000");
+});
 
 
+app.get("/messages", async (req, res) => {
+  try {
+    const { senderId, receiverId } = req.query;
 
+    console.log(senderId);
+    console.log(receiverId);
 
+    const messages = await Chat.find({
+      $or: [
+        { senderId: senderId, receiverId: receiverId },
+        { senderId: receiverId, receiverId: senderId },
+      ],
+    }).populate("senderId", "_id name");
 
+    res.status(200).json(messages);
+  } catch (error) {
+    res.status(500).json({ message: "Error in getting messages", error });
+  }
+});
 
-
-
-
-
-
-
-
-
-//endpoint to delete the messages;
 
