@@ -9,6 +9,7 @@ import "core-js/stable/atob";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useFocusEffect, useRouter } from "expo-router";
+import UserChat from "../../../components/UserChat";
 
 const index = () => {
   const router = useRouter();
@@ -120,6 +121,11 @@ const index = () => {
         </Text>
         <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
       </Pressable>
+      <View>
+        {matches.map((item, index) => (
+          <UserChat key={index} item={item} userId={userId} />
+        ))}
+      </View>
     </View>
   );
 };
