@@ -55,22 +55,23 @@ const index = () => {
       fetchProfiles();
     }
   }, [userId, user]);
-  console.log("profiles", profiles);
+  console.log("profiles: ", profiles);
+
 
   return (
     <View style={{ flex: 1 }}>
       <FlatList
         data={profiles}
         keyExtractor={(item) => item.id}
-        renderItem={(item, index) => {
+        renderItem={({ item, index }) => ( 
           <Profile
             key={index}
             item={item}
             userId={userId}
             setProfiles={setProfiles}
-            isEven={index % 2 === 0}
-          />;
-        }}
+            isEven={index % 2}
+          />
+        )}
       />
     </View>
   );
